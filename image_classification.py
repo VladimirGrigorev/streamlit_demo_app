@@ -9,8 +9,7 @@ from tensorflow.keras.applications.efficientnet import preprocess_input, decode_
 
 @st.cache(allow_output_mutation=True)
 def load_model():
-    model = EfficientNetB0(weights='imagenet')
-    return model
+    return EfficientNetB0(weights='imagenet')
 
 
 def preprocess_image(img):
@@ -19,12 +18,6 @@ def preprocess_image(img):
     x = np.expand_dims(x, axis=0)
     x = preprocess_input(x)
     return x
-
-
-def print_predictions(preds):
-    classes = decode_predictions(preds, top=3)[0]
-    for cl in classes:
-        st.write(cl[1], cl[2])
 
 
 def load_image():
@@ -37,22 +30,20 @@ def load_image():
         return None
 
 
-# Загружаем предварительно обученную модель
+def print_predictions(preds):
+    classes = decode_predictions(preds, top=3)[0]
+    for cl in classes:
+        st.write(cl[1], cl[2])
+
+
 model = load_model()
-# Выводим заголовок страницы
-st.title('Классификация изображений')
-# Выводим форму загрузки изображения и получаем изображение
+
+
+st.title('Новая улучшенная классификации изображений в облаке Streamlit')
 img = load_image()
-# Показывам кнопку для запуска распознавания изображения
 result = st.button('Распознать изображение')
-# Если кнопка нажата, то запускаем распознавание изображения
 if result:
-    # Предварительная обработка изображения
     x = preprocess_image(img)
-    # Распознавание изображения
     preds = model.predict(x)
-    # Выводим заголовок результатов распознавания жирным шрифтом
-    # используя форматирование Markdown
     st.write('**Результаты распознавания:**')
-    # Выводим результаты распознавания
     print_predictions(preds)
